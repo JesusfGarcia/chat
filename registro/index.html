@@ -10,12 +10,13 @@
       href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
       rel="stylesheet"
     />
+    <script type="module" src="../firebase.js"></script>
     <link type="text/css" rel="stylesheet" href="../styles.css" />
     <title>Document</title>
   </head>
   <body>
     <div class="container">
-      <form class="card">
+      <form onsubmit="return null;" class="card">
         <h1>Registro</h1>
         <input placeholder="Nick" name="nick" id="nick" type="text" />
         <input
@@ -31,8 +32,10 @@
           type="password"
         />
         <a href="/index.html">¿Ya tienes cuenta? Inicia sesión!</a>
-        <button>INGRESAR</button>
+        <button id="register" type="button">INGRESAR</button>
       </form>
     </div>
   </body>
+
+  <script type="module" src="./registro.js"></script>
 </html>

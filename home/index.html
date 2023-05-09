@@ -17,18 +17,18 @@
     />
     <title>Whatsapp</title>
   </head>
-  <body onload="initialLoad()">
+  <body>
     <div class="app-container">
       <header class="header">
-        <span onclick="toggleSidebar()" class="material-symbols-outlined icon">
+        <span id="sidebarButton" class="material-symbols-outlined icon">
           menu
         </span>
-        <span onclick="toogleMenu()" class="material-symbols-outlined">
+        <span id="menuButton" class="material-symbols-outlined">
           account_circle
         </span>
       </header>
       <aside id="sidebar" class="sidebar">
-        <input placeholder="buscar" />
+        <!--  <input placeholder="buscar" /> -->
       </aside>
       <aside id="menu" class="menu">
         <a href="/home/profile"> Mi cuenta </a>
@@ -37,11 +37,15 @@
       <main class="main">
         <div id="chat" class="chat"></div>
         <div class="write">
-          <input placeholder="Escribir mensaje..." type="text" />
-          <span class="material-symbols-outlined send"> send </span>
+          <input
+            id="textMessage"
+            placeholder="Escribir mensaje..."
+            type="text"
+          />
+          <span id="send" class="material-symbols-outlined send"> send </span>
         </div>
       </main>
     </div>
   </body>
-  <script src="./home.js"></script>
+  <script type="module" src="./home.js"></script>
 </html>
