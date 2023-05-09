@@ -17,15 +17,12 @@
     />
     <title>Whatsapp</title>
   </head>
-  <body onload="initialLoad()">
+  <body>
     <div class="app-container">
       <header class="header">
         <a href="/home/">
           <span class="material-symbols-outlined"> arrow_back </span>
         </a>
-        <span onclick="toogleMenu()" class="material-symbols-outlined">
-          account_circle
-        </span>
       </header>
       <main class="main">
         <aside id="menu" class="menu">
@@ -34,13 +31,13 @@
         </aside>
         <div class="profile_container">
           <div class="card">
-            <input type="text" placeholder="nick" />
-            <button>Editar</button>
+            <input id="nick" id="nick" type="text" placeholder="nick" />
+            <button id="update">Editar</button>
           </div>
-          <span class="delete">Eliminar Cuenta</span>
+          <!--    <span class="delete">Eliminar Cuenta</span> -->
         </div>
       </main>
     </div>
   </body>
-  <script src="../home.js"></script>
+  <script type="module" src="./profile.js"></script>
 </html>
