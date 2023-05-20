@@ -27,7 +27,9 @@
       <main class="main">
         <aside id="menu" class="menu">
           <a href="/home/profile"> Mi cuenta </a>
-          <a href="/index.html"> Salir </a>
+          <a href="/index.html" onclick="localStorage.removeItem(`uid`)">
+            Salir
+          </a>
         </aside>
         <div class="profile_container">
           <div class="card">

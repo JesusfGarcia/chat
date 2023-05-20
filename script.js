@@ -5,8 +5,6 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const loginButton = document.getElementById("loginButton");
 
-console.log("loginButton", loginButton);
-
 loginButton.addEventListener("click", async () => {
   try {
     //funcion de click a boton de login

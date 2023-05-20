@@ -15,7 +15,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
-    <title>Whatsapp</title>
+    <title>Chat APP</title>
   </head>
   <body>
     <div class="app-container">
@@ -32,7 +32,9 @@
       </aside>
       <aside id="menu" class="menu">
         <a href="/home/profile"> Mi cuenta </a>
-        <a href="/index.html"> Salir </a>
+        <a href="/index.html" onclick="localStorage.removeItem(`uid`)">
+          Salir
+        </a>
       </aside>
       <main class="main">
         <div id="chat" class="chat"></div>

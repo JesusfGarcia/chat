@@ -181,7 +181,7 @@ button:hover {
   max-width: 60%;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  background: hsla(254, 63%, 51%, 0.2);
+  background: hsl(119, 69%, 58%);
 }
 
 .recived {
@@ -197,7 +197,7 @@ button:hover {
   max-width: 60%;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  background: hsla(174, 63%, 51%, 0.2);
+  background: hsla(0, 0%, 100%, 0.908);
 }
 
 .write {
@@ -217,6 +217,10 @@ button:hover {
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+.destacado {
+  background-color: #fff200 !important;
 }
 
 ::-webkit-scrollbar {

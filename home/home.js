@@ -3,6 +3,7 @@ import { db } from "../firebase.js";
 import {
   collection,
   getDocs,
+  addDoc,
 } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js";
 
 import {
@@ -73,7 +74,7 @@ const loadUsers = async () => {
   });
 };
 
-function writeMessage() {
+const writeMessage = () => {
   const db = getDatabase();
   const text = textInput.value;
 
@@ -92,19 +93,45 @@ function writeMessage() {
       {
         text: text,
         owner: myUid,
+        favoriteBy: [],
       },
     ],
   });
   textInput.value = "";
-}
+};
+
+const destacar = async (e, idx) => {
+  e.preventDefault();
+  const db = getDatabase();
+
+  messages.splice(idx, 1, {
+    ...messages[idx],
+    favoriteBy: [...messages[idx].favoriteBy, myUid],
+  });
+
+  let rel =
+    myUid > chatSelected
+      ? `${myUid}-${chatSelected}`
+      : `${chatSelected}-${myUid}`;
+
+  set(ref(db, "chats/" + rel), {
+    messages: [...messages],
+  });
+};
 
 const renderChat = () => {
   chat.innerHTML = "";
-  messages.forEach((message) => {
+  console.log("message", messages);
+  messages.forEach((message, idx) => {
     const divMessage = document.createElement("div");
     const spanMessage = document.createElement("span");
     divMessage.className = message.owner !== myUid ? "sent" : "recived";
+    if (message.favoriteBy.some((uid) => myUid === uid)) {
+      console.log("entroooo");
+      spanMessage.className = "destacado";
+    }
     spanMessage.innerText = message.text;
+    spanMessage.addEventListener("contextmenu", (e) => destacar(e, idx));
     divMessage.append(spanMessage);
     chat.append(divMessage);
   });
@@ -129,8 +156,14 @@ const loadChat = (uid) => {
   const conversation = ref(db, "chats/" + rel);
   onValue(conversation, (snapshot) => {
     const data = snapshot.val();
+    if (!data) {
+      messages = [];
+      renderChat();
+      return;
+    }
     const newMessages = data.messages.map((item) => {
       return {
+        favoriteBy: item.favoriteBy || [],
         text: item.text,
         owner: item.owner,
       };
@@ -140,7 +173,15 @@ const loadChat = (uid) => {
   });
 };
 
+const checkIfValidUser = () => {
+  if (!localStorage.getItem("uid")) {
+    window.location.href = "http://localhost:5500/index.html";
+  }
+};
+
 //carga inicial
+
+checkIfValidUser();
 loadUsers();
 sidebarButton.addEventListener("click", toggleSidebar);
 menuButton.addEventListener("click", toogleMenu);

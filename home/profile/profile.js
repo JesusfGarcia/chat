@@ -35,3 +35,13 @@ const updateNick = async () => {
 updateButton.addEventListener("click", updateNick);
 
 loadNick();
+
+const checkIfValidUser = () => {
+  if (!localStorage.getItem("uid")) {
+    window.location.href = "http://localhost:5500/index.html";
+  }
+};
+
+//carga inicial
+
+checkIfValidUser();
