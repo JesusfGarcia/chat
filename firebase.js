@@ -1,8 +1,10 @@
 // Import the functions you need from the SDKs you need
+//librerias de firebase hospedadas en la red
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js";
 
+//credenciales
 const firebaseConfig = {
   apiKey: "AIzaSyD-S1ogWuD8AUGATV3gNK3OuKXsP0vPrcI",
   authDomain: "chat-6444e.firebaseapp.com",
