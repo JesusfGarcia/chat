@@ -261,3 +261,20 @@ button:hover {
 .delete:hover {
   color: white;
 }
+
+/* chat navbar */
+.header_chat {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(11, 11, 198, 0.29);
+  padding: 10px;
+}
+
+.header_chat button {
+  background-color: transparent;
+  color: rgb(153, 0, 0);
+  font-size: 18px;
+  font-weight: bold;
+}

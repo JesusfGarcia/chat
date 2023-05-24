@@ -18,7 +18,11 @@ let showSidebar = false;
 let showMenu = false;
 let chatSelected = null;
 let usuarios = [];
-let messages = [];
+
+let chatSession = {
+  messages: [],
+  blockedBy: [],
+};
 
 //declaramos interfaz
 const sidebar = document.getElementById("sidebar");
@@ -109,21 +113,26 @@ const loadChat = (uid) => {
 
     //si no hay nada en la liga renderizamos chat vacio
     if (!data) {
-      messages = [];
+      chatSession.messages = [];
+      chatSession.blockedBy = [];
       renderChat();
       return;
     }
 
-    //recorremos la lista de mensajes
-    const newMessages = data.messages.map((item) => {
-      return {
-        favoriteBy: item.favoriteBy || [],
-        text: item.text,
-        owner: item.owner,
-      };
-    });
-    messages = newMessages;
+    chatSession = {
+      blockedBy: data.blockedBy || [],
+      messages: data.messages?.map((item) => {
+        return {
+          favoriteBy: item.favoriteBy || [],
+          text: item.text,
+          owner: item.owner,
+        };
+      }),
+    };
+
     renderChat();
+
+    //recorremos la lista de mensajes
   });
 };
 
@@ -132,8 +141,12 @@ const renderChat = () => {
   //vaciamos el html del contenedor del chat
   chat.innerHTML = "";
 
+  renderNavbar();
+  if (isBlocked()) {
+    return;
+  }
   //creamos un componente por cada mensaje, con sus respectivas clases de css
-  messages.forEach((message, idx) => {
+  chatSession.messages.forEach((message, idx) => {
     const divMessage = document.createElement("div");
     const spanMessage = document.createElement("span");
     divMessage.className = message.owner !== myUid ? "sent" : "recived";
@@ -150,15 +163,79 @@ const renderChat = () => {
   });
 };
 
+//funcion de bloquear
+
+const block = () => {
+  const db = getDatabase();
+
+  //generamos la llave
+  let rel =
+    myUid > chatSelected
+      ? `${myUid}-${chatSelected}`
+      : `${chatSelected}-${myUid}`;
+
+  //se agrega el mensaje a la base de datos en tiempo real
+  set(ref(db, "chats/" + rel), {
+    ...chatSession,
+    blockedBy: [...chatSession.blockedBy, myUid],
+  });
+};
+
+const unBlock = () => {
+  const db = getDatabase();
+
+  //generamos la llave
+  let rel =
+    myUid > chatSelected
+      ? `${myUid}-${chatSelected}`
+      : `${chatSelected}-${myUid}`;
+
+  //se agrega el mensaje a la base de datos en tiempo real
+  const blockedCopy = chatSession.blockedBy;
+
+  const idx = blockedCopy.findIndex((item) => item.uid === myUid);
+  blockedCopy.splice(idx, 1);
+
+  set(ref(db, "chats/" + rel), {
+    ...chatSession,
+    blockedBy: [...blockedCopy],
+  });
+};
+
+//renderizamos navbar
+const renderNavbar = () => {
+  const user = usuarios.find((item) => item.uid === chatSelected);
+
+  const div = document.createElement("div");
+  div.className = "header_chat";
+  //creamos span
+  const span = document.createElement("span");
+  span.innerText = user.nick;
+  //creamos boton
+  const boton = document.createElement("button");
+
+  if (isBlocked()) {
+    boton.innerText = "Desbloquear usuario";
+    boton.onclick = () => unBlock();
+  } else {
+    boton.innerText = "Bloquear usuario";
+    boton.onclick = () => block();
+  }
+
+  div.appendChild(span);
+  div.appendChild(boton);
+  chat.appendChild(div);
+};
+
 //destacar mensaje
 const destacar = async (e, idx) => {
   e.preventDefault();
   const db = getDatabase();
 
   //buscamos el mensaje y lo editamos para que tenga nuestro uid en el arreglo de favoriteBy
-  messages.splice(idx, 1, {
-    ...messages[idx],
-    favoriteBy: [...messages[idx].favoriteBy, myUid],
+  chatSession.messages.splice(idx, 1, {
+    ...chatSession.messages[idx],
+    favoriteBy: [...chatSession.messages[idx].favoriteBy, myUid],
   });
 
   //volvemos a generar llave de la bd
@@ -168,9 +245,7 @@ const destacar = async (e, idx) => {
       : `${chatSelected}-${myUid}`;
 
   //modificamos la base de datos en tiempo real, para que contenga nuestro destacado
-  set(ref(db, "chats/" + rel), {
-    messages: [...messages],
-  });
+  set(ref(db, "chats/" + rel), chatSession);
 };
 
 //escribir mensaje
@@ -182,6 +257,9 @@ const writeMessage = () => {
   if (!text) {
     return;
   }
+  if (isBlocked()) {
+    return;
+  }
 
   //generamos la llave
   let rel =
@@ -191,8 +269,9 @@ const writeMessage = () => {
 
   //se agrega el mensaje a la base de datos en tiempo real
   set(ref(db, "chats/" + rel), {
+    ...chatSession,
     messages: [
-      ...messages,
+      ...chatSession.messages,
       {
         text: text,
         owner: myUid,
@@ -203,6 +282,11 @@ const writeMessage = () => {
 
   //vaciamos el text input
   textInput.value = "";
+};
+
+//checar si esta bloqueado
+const isBlocked = () => {
+  return chatSession.blockedBy.some((uid) => myUid === uid);
 };
 
 //revisar si el usuario puede visualizar esta pantalla
